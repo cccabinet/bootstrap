@@ -128,6 +128,10 @@ New button variants: `.btn-solid`, `.btn-outline`, `.btn-subtle`, `.btn-text`, `
 
 Use `.theme-reset` on a nested subtree to drop inherited `--theme-*` tokens and return to component defaults.
 
+### Placeholder animations
+
+Use `.placeholder-wave` for the standard loading animation. Replace `.placeholder-glow` with `.placeholder-pulse` when you want the old opacity animation. `.placeholder-glow` remains as a compatibility alias.
+
 ### Utility class renames
 
 | v5 | v6 |
@@ -157,14 +161,15 @@ Note: in v6, `lg` and larger are **fluid `clamp()` values** that scale with the 
 
 ### Spacer scale
 
-Keys 3-5 have changed values. To preserve v5 spacing: `.p-3` (1rem) -> `.p-4`, `.p-4` (1.5rem) -> `.p-6`, `.p-5` (3rem) -> `.p-9`.
+Keys 2-5 have changed values. To preserve v5 spacing: `.p-2` (0.5rem) -> `.p-3`, `.p-3` (1rem) -> `.p-5`, `.p-4` (1.5rem) -> `.p-7`, `.p-5` (3rem) -> `.p-12`.
 
 | Key | v5 | v6 |
 | --- | --- | --- |
-| 3 | `1rem` | `0.75rem` |
-| 4 | `1.5rem` | `1rem` |
-| 5 | `3rem` | `1.25rem` |
-| 6-9 | — | `1.5rem`, `2rem`, `2.5rem`, `3rem` |
+| 2 | `0.5rem` | `0.375rem` |
+| 3 | `1rem` | `0.5rem` |
+| 4 | `1.5rem` | `0.75rem` |
+| 5 | `3rem` | `1rem` |
+| 6-12 | — | `1.25rem` through `3rem`, in `0.25rem` steps |
 
 ### Form validation
 
@@ -245,6 +250,18 @@ Replace Collapse JS with native `<details>`/`<summary>`. The `name` attribute cr
   </details>
 </div>
 ```
+
+### Cards
+
+Review card markup and any custom card CSS. v6 changes card borders, layout, and several helper classes.
+
+- `.card` owns the background, outer border, radius, shadow, and height. Headers and footers draw only their divider border.
+- `.card-body` is optional. It is now a flex column that removes direct-child block margins and uses `--card-body-gap` for spacing. Add `.flex-row` for a horizontal body.
+- Keep `.list-group-flush` on list groups inside cards. Do not add `.card-list`; that class is not available.
+- `.card-title` and `.card-text` no longer add styles. Keep them only as project hooks. `.card-subtitle` still reduces the gap above the subtitle.
+- `.card-link` is removed. Use normal links and flex or gap utilities when you need a link row.
+- Use `.card-row` for horizontal cards. Use `.card-subtle` or `.card-translucent` for the new visual variants.
+- Card groups now use a container query. Add `.contains-inline` to a parent or the cards remain stacked.
 
 ### Menu (was Dropdown)
 
@@ -460,7 +477,7 @@ document.querySelectorAll('form[data-bs-validate]')
 
 ### Border radius scale
 
-The `$border-radius-*` variables are gone. v6 uses a single base `$radius: .5rem` and a `$radii` map (keys `0`–`9`, e.g. `5: $radius`, `9: $radius * 3`), exposed as `--radius-0`–`--radius-9` tokens (plus `--radius-pill`). The `.rounded-*` utilities now span `0`–`9` and map to different values than v5, so shift class numbers up to keep the same roundness (e.g. `.rounded-1` → `.rounded-3`, `.rounded-3` → `.rounded-5`). Override the base or the map entries rather than the old per-size variables:
+The `$border-radius-*` variables are gone. v6 uses a single base `$radius: .5rem` and a `$radii` map (keys `0`–`9`, e.g. `5: $radius`, `9: $radius * 2`), exposed as `--radius-0`–`--radius-9` tokens (plus `--radius-pill`). The `.rounded-*` utilities now span `0`–`9` and map to different values than v5, so shift class numbers up to keep the same roundness (e.g. `.rounded-1` → `.rounded-3`, `.rounded-3` → `.rounded-5`). Override the base or the map entries rather than the old per-size variables:
 
 ```scss
 // $radius lives in _config.scss, so configure that module before loading Bootstrap
