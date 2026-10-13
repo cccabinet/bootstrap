@@ -2,7 +2,7 @@
 
 Guidance for AI coding agents working in this repository. Tool-agnostic; `CLAUDE.md` points here.
 
-Bootstrap v6.0.0-alpha1 — CSS/JS framework.
+Bootstrap v6.0.0-alpha.1 — CSS/JS framework.
 Sass source in `scss/`, TypeScript source in `js/src/`, docs site in `site/` (Astro 5 + MDX).
 
 ## Quick commands
@@ -59,7 +59,7 @@ Act as a teacher for JavaScript, TypeScript, React, and all JavaScript-family to
 - Disallowed: raw `border-radius` / `transition` properties (use mixins), `lighten()` / `darken()`, `border: none` / `outline: none`
 - Order: `@use` → `@forward` → `$variables` → `--custom-properties` → declarations → rules
 - Variables use `!default` (except locals)
-- CSS layers: `colors, theme, config, root, reboot, layout, content, forms, components, custom, helpers, utilities`
+- CSS layers: `colors, config, root, reboot, layout, content, forms, components, custom, helpers, utilities`
 - Logical properties: prefer `padding-inline-start` over `padding-left`, etc.
 - Modern CSS: `color-mix()`, `light-dark()`, range media queries (`@media (width >= 1024px)`)
 - Doc markers: `// scss-docs-start name` / `// scss-docs-end name` for docs extraction
