@@ -78,6 +78,27 @@ Bootstrap 6 is a major release with many breaking changes to modernize our codeb
 
 Review these changes when you upgrade from v6.0.0-alpha.1 to alpha 2.
 
+### Highlights
+
+- **Native grid gaps.** Rows use CSS `gap`, without gutter padding on columns or negative margins. Continue using `.g-*`, `.gx-*`, and `.gy-*`. See [Gutters]([[docsref:/layout/gutters]]).
+- **Higher browser minimums.** Chrome and Edge require version 138, Firefox 147, and Safari 26 on macOS and iOS. See [Browsers & devices]([[docsref:/getting-started/browsers-devices]]).
+- **Combobox replaces Chip input.** Editable search, multiple selection, and custom values now share one component. Multiple values submit as separate form fields. See [Combobox]([[docsref:/forms/combobox]]).
+- **Form control fixes.** [Range]([[docsref:/forms/range]]) updates refresh its display and tick marks. [Datepicker]([[docsref:/forms/datepicker]]) displays local dates, submits ISO dates, and preserves the original input.
+- **Dialog and Drawer updates.** Scroll locking compensates for scrollbar space. Drawer backdrops fade during closing, and `.dialog-2xl` supports larger content. See [Dialog and Drawer](#dialog-and-drawer).
+- **CSS token fixes.** Several overrides now affect rendering, while unused tokens are removed. Review the [CSS customization changes](#css-customization) before copying alpha 1 customizations.
+- **Hash links for tabs and collapses.** Add `data-bs-hash` to open a matching tab pane or collapse from a URL fragment. See [Tab]([[docsref:/components/tab]]) and [Collapse]([[docsref:/components/collapse]]).
+
+### Grid gutters
+
+- Rows now use native CSS `gap`. Columns no longer add gutter padding, and rows no longer use negative gutter margins.
+- Keep `.g-*`, `.gx-*`, and `.gy-*`. These classes update the gaps and the column width calculations together. Do not replace them with `.gap-*`.
+- Add content padding to an inner wrapper. Remove wrappers used only to clip gutter overflow. Container padding remains unchanged.
+- Review nested rows. They now fit inside the parent column’s content box, without negative margins.
+- Full-width column breaks take a flex line and create a vertical gap on each side. Use separate rows for one gap.
+- Pass `$gap: 0px` to `make-col()` and `make-col-offset()` outside a gap-based row.
+
+See [Gutters]([[docsref:/layout/gutters]]) for sizing and custom CSS.
+
 ### Browser support
 
 The minimum browser versions have increased from Chrome and Edge 130 to 138, Firefox 132 to 147, and Safari 18 to 26 on macOS and iOS. Check your browser requirements before upgrading. See [Browsers & devices]([[docsref:/getting-started/browsers-devices]]) for the features that set each minimum version.
@@ -100,6 +121,22 @@ Token names below use the unprefixed Sass source names. In Bootstrap’s compile
 - **Existing tokens now affect rendering.** Review overrides of `--card-subtitle-color`, `--nav-tabs-border-radius`, `--check-indeterminate-bg`, `--check-indeterminate-border-color`, and `--switch-checked-indicator-bg`. The components now read these tokens. Indeterminate checkbox colors default to the checked colors.
 - **Password strength label colors.** `.strength-text` now uses emphasis colors for each strength level. Replace label overrides of `--strength-color` with the `$strength-text-colors` Sass map, or style `.strength-text[data-bs-strength="weak"]` and the other strength levels directly. The meter still uses its `--strength-*-color` tokens. See [Password strength]([[docsref:/forms/password-strength]]).
 
+### Chip input becomes Combobox
+
+- Remove the `Chips` JavaScript import and replace `data-bs-chips` with `data-bs-toggle="combobox"`, `data-bs-multiple="true"`, and `data-bs-allow-custom="true"` on the wrapper.
+- Replace `.chip-input` with `.combobox-control`. Add `.combobox-input` beside `.form-ghost` on the editor. Move initial values to `.menu-item.selected[data-bs-value]` elements in a neighboring `.menu`; Combobox renders the chips.
+- Use `Combobox.add()`, `remove()`, `clear()`, `focus()`, and `getValues()`. Replace `maxChips` with `maxItems`. Separators and creation on blur now require explicit options. Repeated free-entry strings do not create duplicate chips.
+- Replace `add.bs.chips`, `remove.bs.chips`, and `change.bs.chips` with their `.bs.combobox` equivalents. The change payload is `event.value`, rather than `event.values`. Chip highlighting, range selection, `selectChip()`, `getSelectedValues()`, `clearSelection()`, and `removeSelected()` now belong to Combobox. Replace `select.bs.chips` with `select.bs.combobox`; its `selected` values describe highlighted chips, not all committed values.
+- Keep `.chip` for standalone presentation, documented under [Components]([[docsref:/components/chips]]). Replace `$chip-input-tokens` and `--chip-input-*` customizations with `$combobox-control-tokens` and `--combobox-control-*`. Configurable dismiss HTML is removed; generated removal buttons use the built-in SVG icon.
+
+### Combobox forms
+
+- Multiple selection now submits one field per selected option instead of a comma-separated value. Update server handlers and use `FormData.getAll(name)` to read all values. Empty multiple selection submits no entries.
+- Use the `input` option or `data-bs-input` to bind an existing hidden input. Disposal keeps provided fields and removes generated fields.
+- Selection changes dispatch bubbling `input` and `change` events before `change.bs.combobox`. The first field remains a stable event target, including when the last option is deselected.
+- Form reset restores the initial selected markup. Call `update()` after changing selected classes or before a synchronous `FormData` read following attribute changes.
+- Combobox lifecycle events follow its Menu transitions, including outside-click dismissal. Search inputs retain their native <kbd>Home</kbd> and <kbd>End</kbd> editing behavior.
+
 ### JavaScript component instances
 
 - Different component types can now share an element. Combobox uses this to register its Menu instance on the same toggle.
@@ -112,6 +149,8 @@ See the [programmatic API]([[docsref:/getting-started/javascript#component-insta
 ## Changelog
 
 ### CSS
+
+- **Flexbox grid gutters now use native `gap`.** Keep `.g-*`, `.gx-*`, and `.gy-*` to control spacing. Rows no longer have negative gutter margins, and columns no longer add gutter padding. Move content padding to an inner wrapper when needed, and remove wrappers used only to clip gutter overflow. Numbered column widths and offsets account for the gaps; standalone column classes keep their percentage widths. See [Gutters]([[docsref:/layout/gutters]]).
 
 - **Clarified and simplified CSS-Sass setup.** Read more about our [approach]([[docsref:/getting-started/approach]]) for how we use Sass and CSS together to build and customize projects for your specific needs, in particular how we use CSS variables inside Sass maps as our first-class customization layer.
 - **Implemented CSS layers** in `_root.scss` and applied them to all our Sass files.
@@ -671,7 +710,7 @@ The prefix syntax does not identify the query type. Utilities, grid columns, con
 - **Dialog** — replaces Modal, built on the native `<dialog>` element. See the Components section above for the full migration.
 - **Stepper** — new `.stepper` component for multi-step workflows with `.stepper-item` and `.stepper-horizontal` variant. CSS-only.
 - **Avatar** — new `.avatar` component with sizes (`.avatar-xs` through `.avatar-xl`), status indicators (`.avatar-status .status-online|offline|busy|away`), subtle variant, and `.avatar-stack` for grouped avatars.
-- **Chip and Chip Input** — new `.chip` component for tags/tokens and `.chip-input[data-bs-chips]` for interactive chip entry. `Chips` JavaScript plugin with events: `add.bs.chips`, `remove.bs.chips`, `change.bs.chips`, `select.bs.chips`.
+- **Chips** — use `.chip` for tags and tokens. Use editable Combobox for interactive entry and multiple-value form submission.
 - **OTP Input** — new `.otp` component for one-time password fields. Built on a single `<input>` rendered as separate digit slots for full accessibility. `OtpInput` JavaScript plugin with events: `input.bs.otpInput`, `complete.bs.otpInput` (both expose `event.value`).
 - **Password Strength** — `Strength` JavaScript plugin for password strength metering with `strengthChange.bs.strength` event.
 - **Range** — `Range` JavaScript plugin that turns `.form-range` into a styled slider with a filled track, optional value bubble, and `<datalist>` tick marks, with a `changed.bs.range` event.
